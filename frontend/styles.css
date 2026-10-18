@@ -152,6 +152,11 @@ button:disabled {
   background: #edf0ff;
 }
 
+.button--danger {
+  color: var(--color-danger);
+  background: #fff2f0;
+}
+
 .endpoint {
   display: flex;
   flex-wrap: wrap;
@@ -251,6 +256,17 @@ button:disabled {
 .card__result--lose {
   color: var(--color-danger);
   background: #fff2f0;
+}
+
+.card__delete {
+  margin-top: 14px;
+}
+
+.card__error {
+  margin: 8px 0 0;
+  color: var(--color-danger);
+  font-size: 0.85rem;
+  line-height: 1.4;
 }
 
 .entry-form {

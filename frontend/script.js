@@ -51,8 +51,19 @@ function createMatchCard(match) {
   const duration = document.createElement("span")
   duration.textContent = `Длительность: ${match.durationMinutes} мин`
 
+  const deleteButton = document.createElement("button")
+  deleteButton.className = "button button--danger card__delete"
+  deleteButton.type = "button"
+  deleteButton.textContent = "Удалить"
+
+  const deleteError = document.createElement("p")
+  deleteError.className = "card__error"
+  deleteError.hidden = true
+
+  deleteButton.addEventListener("click", () => handleDeleteClick(match, deleteButton, deleteError))
+
   meta.append(kda, duration)
-  card.append(hero, result, meta)
+  card.append(hero, result, meta, deleteButton, deleteError)
 
   return card
 }
@@ -128,6 +139,14 @@ async function createMatch(match) {
   return createdMatch
 }
 
+async function deleteMatch(id) {
+  const response = await fetch(`${API_URL}/${id}`, { method: "DELETE" })
+
+  if (!response.ok) {
+    throw new Error(`DELETE ${API_URL}/${id} вернул ${response.status}`)
+  }
+}
+
 async function handleMatchSubmit(event) {
   event.preventDefault()
 
@@ -146,6 +165,26 @@ async function handleMatchSubmit(event) {
     setFormStatus("Не удалось сохранить матч. Проверьте, что API запущен, и отправьте еще раз", true)
   } finally {
     submitButton.disabled = false
+  }
+}
+
+async function handleDeleteClick(match, button, errorText) {
+  const isConfirmed = confirm(`Удалить матч на ${match.hero}?`)
+  if (!isConfirmed) {
+    return
+  }
+
+  button.disabled = true
+  errorText.hidden = true
+
+  try {
+    await deleteMatch(match.id)
+    await loadMatches()
+  } catch (error) {
+    console.error("Не удалось удалить матч", error)
+    errorText.textContent = "Не удалось удалить матч. Проверьте, что API запущен, и попробуйте еще раз"
+    errorText.hidden = false
+    button.disabled = false
   }
 }
 
