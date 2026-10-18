@@ -53,34 +53,99 @@
         <div class="panel__header">
           <div>
             <p class="panel__eyebrow">Новая запись</p>
-            <h2 class="panel__title" id="form-title">Добавить объект</h2>
+            <h2 class="panel__title" id="form-title">Добавить матч</h2>
           </div>
         </div>
 
         <form class="entry-form" data-form="entry">
           <div class="field">
-            <label class="field__label" for="entry-title">Название</label>
+            <label class="field__label" for="entry-hero">Герой</label>
             <input
               class="field__control"
-              id="entry-title"
-              name="title"
+              id="entry-hero"
+              name="hero"
               type="text"
               minlength="2"
-              placeholder="Замените подсказку под свою тему"
+              maxlength="40"
+              placeholder="Например, Shadow Fiend"
               required
             />
           </div>
 
-          <p class="entry-form__hint">
-            Добавьте остальные поля своей модели. Всего должно быть не меньше четырех
-            содержательных свойств помимо id.
-          </p>
+          <div class="field">
+            <label class="field__label" for="entry-result">Результат</label>
+            <select class="field__control" id="entry-result" name="isWin" required>
+              <option value="">Выберите результат</option>
+              <option value="true">Победа</option>
+              <option value="false">Поражение</option>
+            </select>
+          </div>
+
+          <div class="entry-form__row">
+            <div class="field">
+              <label class="field__label" for="entry-kills">Убийства</label>
+              <input
+                class="field__control"
+                id="entry-kills"
+                name="kills"
+                type="number"
+                min="0"
+                max="99"
+                step="1"
+                required
+              />
+            </div>
+
+            <div class="field">
+              <label class="field__label" for="entry-deaths">Смерти</label>
+              <input
+                class="field__control"
+                id="entry-deaths"
+                name="deaths"
+                type="number"
+                min="0"
+                max="99"
+                step="1"
+                required
+              />
+            </div>
+
+            <div class="field">
+              <label class="field__label" for="entry-assists">Помощь</label>
+              <input
+                class="field__control"
+                id="entry-assists"
+                name="assists"
+                type="number"
+                min="0"
+                max="99"
+                step="1"
+                required
+              />
+            </div>
+          </div>
+
+          <div class="field">
+            <label class="field__label" for="entry-duration">Длительность, мин</label>
+            <input
+              class="field__control"
+              id="entry-duration"
+              name="durationMinutes"
+              type="number"
+              min="1"
+              max="180"
+              step="1"
+              required
+            />
+          </div>
 
           <div class="entry-form__actions">
             <button class="button button--primary" type="submit" data-action="submit">
               Отправить в API
             </button>
           </div>
+
+          <p class="entry-form__status" data-ui="form-status" role="status" aria-live="polite"></p>
         </form>
       </section>
     </main>

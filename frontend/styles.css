@@ -291,9 +291,27 @@ textarea.field__control {
   line-height: 1.55;
 }
 
+.entry-form__row {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+
 .entry-form__actions {
   display: flex;
   justify-content: flex-end;
+}
+
+.entry-form__status {
+  min-height: 1.5em;
+  margin: 0;
+  color: var(--color-muted);
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+
+.entry-form__status--error {
+  color: var(--color-danger);
 }
 
 .page-footer {
