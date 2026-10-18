@@ -1,4 +1,5 @@
 const API_URL = "http://localhost:3000/matches"
+const REQUEST_TIMEOUT_MS = 5000
 
 const endpointText = document.querySelector('[data-ui="endpoint"]')
 const statusBox = document.querySelector('[data-ui="status"]')
@@ -22,6 +23,37 @@ function setListState(state, title, text) {
 function setFormStatus(message, isError) {
   formStatus.textContent = message
   formStatus.classList.toggle("entry-form__status--error", isError)
+}
+
+function getErrorMessage(error) {
+  if (error.name === "AbortError") {
+    return `сервер не ответил за ${REQUEST_TIMEOUT_MS / 1000} секунд`
+  }
+
+  if (error.status) {
+    return `сервер вернул ошибку ${error.status}`
+  }
+
+  return "API не запущен или недоступен"
+}
+
+async function request(url, options = {}) {
+  const controller = new AbortController()
+  const timerId = setTimeout(() => controller.abort(), REQUEST_TIMEOUT_MS)
+
+  try {
+    const response = await fetch(url, { ...options, signal: controller.signal })
+
+    if (!response.ok) {
+      const error = new Error(`${options.method || "GET"} ${url} вернул ${response.status}`)
+      error.status = response.status
+      throw error
+    }
+
+    return response
+  } finally {
+    clearTimeout(timerId)
+  }
 }
 
 function createMatchCard(match) {
@@ -84,12 +116,7 @@ function renderMatches(matches) {
 }
 
 async function fetchMatches() {
-  const response = await fetch(API_URL)
-
-  if (!response.ok) {
-    throw new Error(`GET ${API_URL} вернул ${response.status}`)
-  }
-
+  const response = await request(API_URL)
   const matches = await response.json()
   return matches
 }
@@ -103,7 +130,7 @@ async function loadMatches() {
     renderMatches(matches)
   } catch (error) {
     console.error("Не удалось загрузить матчи", error)
-    setListState("error", "Не удалось загрузить матчи", "Проверьте, что API запущен, и нажмите Обновить")
+    setListState("error", "Не удалось загрузить матчи", `Причина: ${getErrorMessage(error)}. Нажмите Обновить`)
   } finally {
     reloadButton.disabled = false
   }
@@ -123,7 +150,7 @@ function readMatchFromForm() {
 }
 
 async function createMatch(match) {
-  const response = await fetch(API_URL, {
+  const response = await request(API_URL, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -131,20 +158,12 @@ async function createMatch(match) {
     body: JSON.stringify(match),
   })
 
-  if (!response.ok) {
-    throw new Error(`POST ${API_URL} вернул ${response.status}`)
-  }
-
   const createdMatch = await response.json()
   return createdMatch
 }
 
 async function deleteMatch(id) {
-  const response = await fetch(`${API_URL}/${id}`, { method: "DELETE" })
-
-  if (!response.ok) {
-    throw new Error(`DELETE ${API_URL}/${id} вернул ${response.status}`)
-  }
+  await request(`${API_URL}/${id}`, { method: "DELETE" })
 }
 
 async function handleMatchSubmit(event) {
@@ -162,7 +181,7 @@ async function handleMatchSubmit(event) {
     await loadMatches()
   } catch (error) {
     console.error("Не удалось отправить матч", error)
-    setFormStatus("Не удалось сохранить матч. Проверьте, что API запущен, и отправьте еще раз", true)
+    setFormStatus(`Не удалось сохранить матч: ${getErrorMessage(error)}. Данные остались в форме`, true)
   } finally {
     submitButton.disabled = false
   }
@@ -182,7 +201,7 @@ async function handleDeleteClick(match, button, errorText) {
     await loadMatches()
   } catch (error) {
     console.error("Не удалось удалить матч", error)
-    errorText.textContent = "Не удалось удалить матч. Проверьте, что API запущен, и попробуйте еще раз"
+    errorText.textContent = `Не удалось удалить: ${getErrorMessage(error)}`
     errorText.hidden = false
     button.disabled = false
   }
