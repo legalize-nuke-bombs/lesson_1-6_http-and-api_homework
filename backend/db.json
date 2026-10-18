@@ -1,12 +1,31 @@
 {
-  "items": [
+  "matches": [
     {
-      "id": "starter-1",
-      "title": "Замените демонстрационную запись",
-      "category": "starter",
-      "value": 0,
-      "isActive": true
+      "id": "1",
+      "hero": "Shadow Fiend",
+      "isWin": true,
+      "kills": 14,
+      "deaths": 3,
+      "assists": 9,
+      "durationMinutes": 38
+    },
+    {
+      "id": "2",
+      "hero": "Queen of Pain",
+      "isWin": false,
+      "kills": 7,
+      "deaths": 9,
+      "assists": 11,
+      "durationMinutes": 46
+    },
+    {
+      "id": "3",
+      "hero": "Pudge",
+      "isWin": true,
+      "kills": 6,
+      "deaths": 5,
+      "assists": 17,
+      "durationMinutes": 41
     }
   ]
 }
-
