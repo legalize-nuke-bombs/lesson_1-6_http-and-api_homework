@@ -9,6 +9,7 @@
   --color-primary-dark: #4436bf;
   --color-accent: #1b9aaa;
   --color-danger: #b42318;
+  --color-success: #1d7a4c;
   --shadow: 0 22px 60px rgba(39, 49, 78, 0.11);
   font-family:
     Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
@@ -201,6 +202,10 @@ button:disabled {
   background: #fff2f0;
 }
 
+.status--empty {
+  border-style: dashed;
+}
+
 .collection {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -227,6 +232,25 @@ button:disabled {
   margin: 0;
   color: var(--color-muted);
   line-height: 1.45;
+}
+
+.card__result {
+  display: inline-block;
+  margin: 0 0 12px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 0.82rem;
+  font-weight: 760;
+}
+
+.card__result--win {
+  color: var(--color-success);
+  background: #e6f6ee;
+}
+
+.card__result--lose {
+  color: var(--color-danger);
+  background: #fff2f0;
 }
 
 .entry-form {
